@@ -42,7 +42,7 @@
  ## Project Details
  ### AI model
 
- kaggle에서 agument apple datasets를 다운받아 이를 활용하여 AI model을 구축하였습니다. AI model을 구축 할 때에는 vscode를 이용하여 코드를 작성하였으며, 모델 구축시 tensorflow를 활용하였습니다. 
+ kaggle에서 agument apple datasets([kaggle] (https://www.kaggle.com/datasets/rm1000/augmented-apple-disease-detection-dataset) )를 다운받아 이를 활용하여 AI model을 구축하였습니다. AI model을 구축 할 때에는 vscode를 이용하여 코드를 작성하였으며, 모델 구축시 tensorflow를 활용하였습니다. 
 
  ```python
 import tensorflow as tf
