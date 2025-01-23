@@ -155,6 +155,56 @@ model.save("C:/datamodel/apple_model.h5")
 
  USB WebCam을 연결하여 OpenCv를 활용해 이미지를 3시간에 한 번씩 캡쳐하고, 이를 flask 서버로 전송하게 했습니다.
 
+ ```python
+import cv2
+import time
+from datetime import datetime
+import requests
+
+# Flask 서버의 Ngrok URL
+FLASK_SERVER_URL ="https://95c1-210-93-56-120.ngrok-free.app/predict"  # Ngrok URL 입력
+
+# USB 웹카메라 초기화
+camera = cv2.VideoCapture(0)  # 기본 USB 웹캠 '/dev/video0'
+if not camera.isOpened():
+    print("USB 웹카메라를 찾을 수 없습니다.")
+    exit()
+
+try:
+    while True:
+        # 사진 촬영
+        ret, frame = camera.read()
+        if ret:
+            # 현재 날짜와 시간을 기반으로 파일 이름 생성
+            filename = f"captured_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+            cv2.imwrite(filename, frame)  # 촬영된 이미지를 저장
+            print(f"{filename} 저장 완료")
+
+            # 저장된 이미지를 Flask 서버로 전송
+            with open(filename, "rb") as img_file:
+                files = {"file": img_file}
+                try:
+                    response = requests.post(FLASK_SERVER_URL, files=files)
+                    if response.status_code == 200:
+                        result = response.json().get("result", "알 수 없는 결과")
+                        print(f"Flask 서버 응답: {result}")
+                    else:
+                        print(f"Flask 서버 오류: {response.status_code}, {response.text}")
+                except Exception as e:
+                    print(f"Flask 서버 전송 중 오류: {e}")
+
+        else:
+            print("카메라에서 이미지를 가져오지 못했습니다.")
+
+        # 3시간(10800초) 대기
+        time.sleep(30)
+
+except KeyboardInterrupt:
+    print("프로그램 종료")
+finally:
+    camera.release()
+```
+
  ### Intergration
 
  사과 병해충 데이터셋을 이용해 제작한 AI model을 flask 서버에 포함시키고, 라즈베리파이와 연결된 USB WebCam에서 캡쳐한 이미지를 서버로 전송시켜 서버에서는 해당 이미지를 판별하게 했으므로 AI model, flask server, Rasberry Pi, USB WebCam을 모두 연결시켰다고 볼 수 있습니다.
