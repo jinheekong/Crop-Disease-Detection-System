@@ -45,7 +45,7 @@
  kaggle에서 agument apple datasets를 다운받아 이를 활용하여 AI model을 구축하였습니다. AI model을 구축 할 때에는 vscode를 이용하여 코드를 작성하였으며, 모델 구축시 tensorflow를 활용하였습니다. 
 
  ```python
- import tensorflow as tf
+import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
@@ -54,9 +54,11 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.regularizers import l2
 import matplotlib.pyplot as plt
 
+# 데이터 경로 설정
 train_dir = "C:/data/aaa/train"          # 훈련 데이터 경로
 validation_dir = "C:/data/aaa/validation"  # 유효성 데이터 경로
 
+# 데이터 전처리 (정규화만 적용)
 train_datagen = ImageDataGenerator(rescale=1./255)
 validation_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -73,9 +75,12 @@ validation_generator = validation_datagen.flow_from_directory(
     batch_size=32,
     class_mode='categorical'
 )
+
+# 클래스 수 확인
 num_classes = len(train_generator.class_indices)
 print(f"Detected {num_classes} classes: {train_generator.class_indices}")
 
+# CNN 모델 생성 (정규화 및 드롭아웃 추가)
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', kernel_regularizer=l2(0.01), input_shape=(128, 128, 3)),
     MaxPooling2D((2, 2)),
@@ -91,18 +96,21 @@ model = Sequential([
     Dense(num_classes, activation='softmax')  # 클래스 수에 맞게 출력층 생성
 ])
 
+# 모델 컴파일
 model.compile(
     optimizer=Adam(learning_rate=0.001),
     loss='categorical_crossentropy',
     metrics=['accuracy']
 )
 
+# 조기 종료 콜백 설정
 early_stopping = EarlyStopping(
     monitor='val_loss',  # 검증 손실 기준
     patience=5,          # 성능 개선이 없으면 5 에포크 후 종료
     restore_best_weights=True
 )
 
+# 모델 학습
 history = model.fit(
     train_generator,
     steps_per_epoch=train_generator.samples // train_generator.batch_size,
@@ -112,8 +120,10 @@ history = model.fit(
     callbacks=[early_stopping]
 )
 
+# 학습 결과 시각화
 plt.figure(figsize=(12, 4))
 
+# Accuracy 그래프
 plt.subplot(1, 2, 1)
 plt.plot(history.history['accuracy'], label='Train Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
@@ -122,6 +132,7 @@ plt.title('Model Accuracy')
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 
+# Loss 그래프
 plt.subplot(1, 2, 2)
 plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
@@ -132,6 +143,7 @@ plt.ylabel('Loss')
 
 plt.show()
 
+# 모델 저장
 model.save("C:/datamodel/apple_model.h5")
 ```
 
