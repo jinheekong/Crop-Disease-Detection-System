@@ -1,7 +1,7 @@
 # Disease and (Insect)Pest Detection System
 
 ## Contents
-  ### -Project Synopsis
+* Project Synopsis
   -Tools
     -platform
     -sensor
