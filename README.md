@@ -151,6 +151,74 @@ model.save("C:/datamodel/apple_model.h5")
 
  윈도우 환경에서 코드를 작성하여 윈도우 명령창을 통해 flask server를 실행시켰습니다. flask server는 AI model이 포함되게 작성했으며, 해당 서버에서 라즈베리파이에서 찍은 사진을 전송받고, 전송받은 사진을 server에 포함된 AI model을 이용하여 병해충 감염 유무를 판별하게 하였습니다. 또한, flask 서버를 구축한 환경과 다른 wifi에 연결되어있어도 라즈베리파이에서 flask 서버에 접근할 수 있도록 ngrok을 이용하여 서버의 접근성을 높였습니다.
 
+ ```python
+from flask import Flask, request, jsonify
+import tensorflow as tf
+import numpy as np
+from PIL import Image
+import io
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+# 모델 로드
+try:
+    model = tf.keras.models.load_model(r"C:/datamodel/apple_model.h5")  # 모델 경로 설정
+    print("모델이 성공적으로 로드되었습니다.")
+except Exception as e:
+    print(f"모델 로드 에러: {e}")
+    model = None
+
+# 이미지 전처리 함수
+def preprocess_image(image):
+    try:
+        target_size = (128, 128)  # 모델 입력 크기 (128x128으로 수정)
+        image = image.resize(target_size)  # 크기 조정
+        image = np.array(image) / 255.0  # 정규화
+
+        # 흑백 이미지 처리
+        if len(image.shape) == 2:  # 흑백 이미지일 경우
+            image = np.expand_dims(image, axis=-1)  # 흑백 채널 추가
+            image = np.repeat(image, 3, axis=-1)  # RGB로 변환
+
+        # 모델 입력 형태로 변환
+        image = np.expand_dims(image, axis=0)  # 배치 차원 추가
+        return image
+    except Exception as e:
+        raise ValueError(f"이미지 전처리 에러: {e}")
+
+@app.route("/")
+def home():
+    return "Flask 서버가 실행 중입니다!"
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    if model is None:
+        return jsonify({"error": "Model is not loaded"}), 500
+
+    if 'file' not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file = request.files['file']
+    try:
+        image = Image.open(io.BytesIO(file.read())).convert("RGB")  # 이미지를 RGB로 변환
+        processed_image = preprocess_image(image)  # 이미지 전처리
+        prediction = model.predict(processed_image)  # 예측 수행
+
+        # 병해충 여부 판단
+        is_infected = prediction[0][0] > 0.5  # 0번째 출력 노드 값으로 병해충 여부 판단
+        result = "병해충 의심" if is_infected else "좋음"
+
+        # 결과 반환
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": f"Prediction error: {str(e)}"}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
+```
+
  ### Rasberry Pi
 
  USB WebCam을 연결하여 OpenCv를 활용해 이미지를 3시간에 한 번씩 캡쳐하고, 이를 flask 서버로 전송하게 했습니다.
@@ -197,7 +265,7 @@ try:
             print("카메라에서 이미지를 가져오지 못했습니다.")
 
         # 3시간(10800초) 대기
-        time.sleep(30)
+        time.sleep(10800)
 
 except KeyboardInterrupt:
     print("프로그램 종료")
