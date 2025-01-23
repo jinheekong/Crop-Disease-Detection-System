@@ -2,11 +2,11 @@
 
 ## Contents
 * Project Synopsis
-  -Tools
-    -platform
-    -sensor
-    -software
-    -dataset
+* Tools
+    * platform
+    * sensor
+    * software
+    * dataset
  -Big Picture
  -Project Details
     -AI model
