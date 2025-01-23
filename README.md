@@ -30,4 +30,11 @@
 
  ## Tools
  ### Platform
-* Rasberry Pi 4B
+ * Rasberry Pi 4B
+ ### Sensor
+ * USB WebCam
+ ### Software
+ * vscode
+
+ ## Big Picture
+ *
