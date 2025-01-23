@@ -7,11 +7,11 @@
     * sensor
     * software
     * dataset
- -Big Picture
- -Project Details
-    -AI model
-    -flask server
-    -raspberry pi
-    -Integaration
- -Demo
- -Review
+* Big Picture
+* Project Details
+    * AI model
+    * flask server
+    * raspberry pi
+    * Integaration
+* Demo
+* Review
