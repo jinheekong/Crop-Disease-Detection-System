@@ -44,6 +44,109 @@
 
  kaggle에서 agument apple datasets를 다운받아 이를 활용하여 AI model을 구축하였습니다. AI model을 구축 할 때에는 vscode를 이용하여 코드를 작성하였으며, 모델 구축시 tensorflow를 활용하였습니다. 
 
+ '''python
+ import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.regularizers import l2
+import matplotlib.pyplot as plt
+
+# 데이터 경로 설정
+train_dir = "C:/data/aaa/train"          # 훈련 데이터 경로
+validation_dir = "C:/data/aaa/validation"  # 유효성 데이터 경로
+
+# 데이터 전처리 (정규화만 적용)
+train_datagen = ImageDataGenerator(rescale=1./255)
+validation_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(128, 128),  # 이미지 크기 통일
+    batch_size=32,
+    class_mode='categorical'
+)
+
+validation_generator = validation_datagen.flow_from_directory(
+    validation_dir,
+    target_size=(128, 128),
+    batch_size=32,
+    class_mode='categorical'
+)
+
+# 클래스 수 확인
+num_classes = len(train_generator.class_indices)
+print(f"Detected {num_classes} classes: {train_generator.class_indices}")
+
+# CNN 모델 생성 (정규화 및 드롭아웃 추가)
+model = Sequential([
+    Conv2D(32, (3, 3), activation='relu', kernel_regularizer=l2(0.01), input_shape=(128, 128, 3)),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+    Conv2D(64, (3, 3), activation='relu', kernel_regularizer=l2(0.01)),
+    MaxPooling2D((2, 2)),
+    Dropout(0.25),
+    Conv2D(128, (3, 3), activation='relu', kernel_regularizer=l2(0.01)),
+    MaxPooling2D((2, 2)),
+    Flatten(),
+    Dense(128, activation='relu', kernel_regularizer=l2(0.01)),
+    Dropout(0.5),
+    Dense(num_classes, activation='softmax')  # 클래스 수에 맞게 출력층 생성
+])
+
+# 모델 컴파일
+model.compile(
+    optimizer=Adam(learning_rate=0.001),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# 조기 종료 콜백 설정
+early_stopping = EarlyStopping(
+    monitor='val_loss',  # 검증 손실 기준
+    patience=5,          # 성능 개선이 없으면 5 에포크 후 종료
+    restore_best_weights=True
+)
+
+# 모델 학습
+history = model.fit(
+    train_generator,
+    steps_per_epoch=train_generator.samples // train_generator.batch_size,
+    validation_data=validation_generator,
+    validation_steps=validation_generator.samples // validation_generator.batch_size,
+    epochs=50,  # 최대 50 에포크 설정
+    callbacks=[early_stopping]
+)
+
+# 학습 결과 시각화
+plt.figure(figsize=(12, 4))
+
+# Accuracy 그래프
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.legend()
+plt.title('Model Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+
+# Loss 그래프
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.legend()
+plt.title('Model Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+
+plt.show()
+
+# 모델 저장
+model.save("C:/datamodel/apple_model.h5")
+'''
+
  ### Flask server
 
  윈도우 환경에서 코드를 작성하여 윈도우 명령창을 통해 flask server를 실행시켰습니다. flask server는 AI model이 포함되게 작성했으며, 해당 서버에서 라즈베리파이에서 찍은 사진을 전송받고, 전송받은 사진을 server에 포함된 AI model을 이용하여 병해충 감염 유무를 판별하게 하였습니다. 또한, flask 서버를 구축한 환경과 다른 wifi에 연결되어있어도 라즈베리파이에서 flask 서버에 접근할 수 있도록 ngrok을 이용하여 서버의 접근성을 높였습니다.
