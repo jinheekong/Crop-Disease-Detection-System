@@ -285,9 +285,11 @@ finally:
  App Inventer를 활용하여 스마트폰 어플리케이션을 제작했습니다. 앱과 서버의 연동이 잘 이루어지지 않아 앱에서 병해충 탐지 결과를 확인 하는 것에는 실패하였지만, flask 서버에서 App Inventer가 처리하기 쉽게 응답을 JSON 형식으로 변환해주면 문제가 해결될 것이라고 생각합니다.
 
 * 앱 화면 구성
+  
 ![Image](https://github.com/user-attachments/assets/212516c2-7c3f-497b-b2df-a9b2c0b3623e)
 
 * 앱 블록코딩 구성
+  
 ![Image](https://github.com/user-attachments/assets/f0d4716d-f4e5-45b1-9d01-fdb3fb03a68d)
 
  ### Intergration
