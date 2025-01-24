@@ -16,6 +16,7 @@
 * Demo
 * Review
 
+
 ## Project Synopsis
 * 프로젝트 명 : 농작물 병해충 관리 AI 시스템
 * 진행 기간 : 2025.01.13 ~ 2025.01.24
@@ -28,6 +29,7 @@
    * app inventer를 활용하여 스마트폰 어플리케이션을 제작할 수 있었습니다.(flask 서버 정보 불러오기 실패)
    * 라즈베리파이 환경에서 캡쳐하고 저장한 이미지를 서버로 전송하여 병해충 감염 유무를 판단할 수 있다는 것을 확인해볼 수 있었습니다.
 
+
  ## Tools
  ### Platform
  * Rasberry Pi 4B
@@ -36,8 +38,10 @@
  ### Software
  * vscode
 
+
  ## Big Picture
  * 농작물의 병해충을 탐지하기 위해 모델을 만들고, 해당 모델을 포함한 서버를 구축하여 라즈베리파이에서 캡쳐한 이미지를 서버로 전송되게 하였고, 이를 통하여 농작물의 병해충을 탐지할 수 있도록 하였습니다.
+
 
  ## Project Details
  ### AI model
@@ -148,12 +152,15 @@ plt.show()
 model.save("C:/datamodel/apple_model.h5")
 ```
 
+
  * 모델 학습 결과 그래프
 ![Image](https://github.com/user-attachments/assets/7cf1fc96-b5ea-4f22-8876-4f4d7b92bc9a)
+
 
  ### Flask server
 
  윈도우 환경에서 코드를 작성하여 윈도우 명령창을 통해 flask server를 실행시켰습니다. flask server는 AI model이 포함되게 작성했으며, 해당 서버에서 라즈베리파이에서 찍은 사진을 전송받고, 전송받은 사진을 server에 포함된 AI model을 이용하여 병해충 감염 유무를 판별하게 하였습니다. 또한, flask 서버를 구축한 환경과 다른 wifi에 연결되어있어도 라즈베리파이에서 flask 서버에 접근할 수 있도록 ngrok을 이용하여 서버의 접근성을 높였습니다.
+
 
 * 파이썬 코드
  ```python
@@ -223,8 +230,11 @@ def predict():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 ```
+
 * 서버 사진
+
 ![Image](https://github.com/user-attachments/assets/cdb560cf-d099-45ab-a7c9-0334a0646f1a)
+
 
  ### Rasberry Pi
 
@@ -280,25 +290,31 @@ finally:
     camera.release()
 ```
 
+
  ### App
 
  App Inventer를 활용하여 스마트폰 어플리케이션을 제작했습니다. 앱과 서버의 연동이 잘 이루어지지 않아 앱에서 병해충 탐지 결과를 확인 하는 것에는 실패하였지만, flask 서버에서 App Inventer가 처리하기 쉽게 응답을 JSON 형식으로 변환해주면 문제가 해결될 것이라고 생각합니다.
+
 
 * 앱 화면 구성
   
 ![Image](https://github.com/user-attachments/assets/212516c2-7c3f-497b-b2df-a9b2c0b3623e)
 
+
 * 앱 블록코딩 구성
   
 ![Image](https://github.com/user-attachments/assets/f0d4716d-f4e5-45b1-9d01-fdb3fb03a68d)
+
 
  ### Intergration
 
  사과 병해충 데이터셋을 이용해 제작한 AI model을 flask 서버에 포함시키고, 라즈베리파이와 연결된 USB WebCam에서 캡쳐한 이미지를 서버로 전송시켜 서버에서는 해당 이미지를 판별하게 했으므로 AI model, flask server, Rasberry Pi, USB WebCam을 모두 연결시켰다고 볼 수 있습니다.
 
+
  ## Demo
 
  https://github.com/user-attachments/assets/a561fc51-2b57-4f9a-b4a6-ba76a35f652a
+
 
  ## Review
  * 본 프로젝트에서 라즈베리파이, USB WebCam, kaggle의 무료 데이터셋을 통해 농작물 병해충 감지 AI 시스템을 구현해낼 수 있었습니다. 이번 활동을 통해 AI model을 제작하는 방법, flask 서버를 구축하는 방법 등에 대해 배웠고, 이를 직접 구축해봄으로써 농장에 더 직접적인 도움을 줄 수 있는 시스템으로 발전시켜나가고 싶다는 생각을 하게 되었습니다.
