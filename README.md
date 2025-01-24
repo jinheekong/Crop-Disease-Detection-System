@@ -44,6 +44,7 @@
 
  kaggle에서 augmented apple datasets(https://www.kaggle.com/datasets/rm1000/augmented-apple-disease-detection-dataset)를 다운받아 이를 활용하여 AI model을 구축하였습니다. AI model을 구축 할 때에는 vscode를 이용하여 코드를 작성하였으며, 모델 구축시 tensorflow를 활용하였습니다. 
 
+ * 파이썬 코드
  ```python
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -151,6 +152,7 @@ model.save("C:/datamodel/apple_model.h5")
 
  윈도우 환경에서 코드를 작성하여 윈도우 명령창을 통해 flask server를 실행시켰습니다. flask server는 AI model이 포함되게 작성했으며, 해당 서버에서 라즈베리파이에서 찍은 사진을 전송받고, 전송받은 사진을 server에 포함된 AI model을 이용하여 병해충 감염 유무를 판별하게 하였습니다. 또한, flask 서버를 구축한 환경과 다른 wifi에 연결되어있어도 라즈베리파이에서 flask 서버에 접근할 수 있도록 ngrok을 이용하여 서버의 접근성을 높였습니다.
 
+* 파이썬 코드
  ```python
 from flask import Flask, request, jsonify
 import tensorflow as tf
@@ -218,7 +220,7 @@ def predict():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 ```
-
+* 서버 사진
 ![Image](https://github.com/user-attachments/assets/cdb560cf-d099-45ab-a7c9-0334a0646f1a)
 
  ### Rasberry Pi
