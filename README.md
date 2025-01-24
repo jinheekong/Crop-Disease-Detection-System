@@ -277,6 +277,12 @@ finally:
     camera.release()
 ```
 
+ ### App
+
+ App Inventer를 활용하여 스마트폰 어플리케이션을 제작했습니다. 앱과 서버의 연동이 잘 이루어지지 않아 앱에서 병해충 탐지 결과를 확인 하는 것에는 실패하였지만, flask 서버에서 App Inventer가 처리하기 쉽게 응답을 JSON 형식으로 변환해주면 문제가 해결될 것이라고 생각합니다.
+
+ 
+
  ### Intergration
 
  사과 병해충 데이터셋을 이용해 제작한 AI model을 flask 서버에 포함시키고, 라즈베리파이와 연결된 USB WebCam에서 캡쳐한 이미지를 서버로 전송시켜 서버에서는 해당 이미지를 판별하게 했으므로 AI model, flask server, Rasberry Pi, USB WebCam을 모두 연결시켰다고 볼 수 있습니다.
