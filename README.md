@@ -219,6 +219,8 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 ```
 
+![Image](https://github.com/user-attachments/assets/cdb560cf-d099-45ab-a7c9-0334a0646f1a)
+
  ### Rasberry Pi
 
  USB WebCam을 연결하여 OpenCv를 활용해 이미지를 3시간에 한 번씩 캡쳐하고, 이를 flask 서버로 전송하게 했습니다.
